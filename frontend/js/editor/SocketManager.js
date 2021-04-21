@@ -154,7 +154,7 @@ doc.subscribe(function (err) {
 
     chatroomChatbox.addEventListener('keydown', (e) => {
         if (!e.repeat)
-            if (e.keyCode == 13) {
+            if (e.code == "Enter") {
                 chatPing();
                 console.log("ENTER PRESSED")
             }

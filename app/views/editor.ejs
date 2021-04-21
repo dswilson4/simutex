@@ -26,25 +26,23 @@
     <div class="d-flex" id="wrapper">
 
         <!-- Sidebar -->
-        <div class="col align-items-end" style="height: 100vh;" id="sidebar-wrapper">
+        <div class="col-3 align-items-end" style="height: 100vh;" id="sidebar-wrapper">
 
-            <div class="col">
-                <div data-toggle="tooltip" data-placement="right" title="<%= brand.name %>" style="cursor: default;"><%= brand.name %></div>
-                <a href="/profile" class="bg-light">Profile</a>
-            </div>
+            <div data-toggle="tooltip" data-placement="right" title="<%= brand.name %>" style="cursor: default;"><%= brand.name %></div>
+            <a href="/profile" class="bg-light">Profile</a>
 
 
             <div id="chatroom-container" class="">
-                <div id="chatroom-parent" class="col" style="max-height: 80vh; overflow-y:scroll">
+                <div id="chatroom-parent" class="col" style="height: 80vh; overflow-y:scroll">
 
                 </div>
             </div>
 
-            <div class="align-self-end" style="bottom: 0">
-                <div class="form-group">
-                    <input type="text" class="form-control" id="chatroom-chatbox" placeholder="Send message...">
-                </div>
-                <button id="chatroom-submit" type="button" class="btn btn-primary">Primary</button>
+            <div class="col align-self-end">
+            <div class="form-group">
+                <input type="text" class="form-control" id="chatroom-chatbox" placeholder="Send message...">
+            </div>
+            <button id="chatroom-submit" type="button" class="btn btn-primary">Primary</button>                
             </div>
 
         </div>

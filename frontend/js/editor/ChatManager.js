@@ -9,6 +9,7 @@ function setChat(passed) {
     div.append(text);
     chatroom.appendChild(div);
   }
+  $(chatroom).scrollTop($(chatroom)[0].scrollHeight)
   console.log(passed);
 }
 
