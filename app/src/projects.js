@@ -81,10 +81,13 @@ router.get('/', async (req, res) => {
         });
 });
 
+
+
 /**
- * Create a new project and redirect them to the editor.
+ * For Creating test projects in the same directory...
  */
-router.get('/new', (req, res) => {
+
+function makeProject(req, res, fileNumber) {
     var doc_id = uuid.v4();
     db.get().collection('projects').find({ id: doc_id }).toArray((err, projects) => {
         if (projects.length == 0) {
@@ -93,22 +96,71 @@ router.get('/new', (req, res) => {
                 id: doc_id,
                 owner: req.cookies.u,
                 collaborators: [],
-                viewers: []
+                viewers: [],
+                fileNames: []
             }
             let new_project_data = `\\documentclass{article}\n\n\\begin{document}\n\tMy New Project\n\\end{document}`;
             let build_dir = `projects/${doc_id}`;
             mkdirp(build_dir).then(made => {
                 let in_file = build_dir + '/in.tex'
+                new_project.fileNames.push(in_file);
                 fs.writeFile(in_file, new_project_data, 'utf8', (e) => {
+                     /**
+                     * Start forloop for creating multiple testfiles in new project directory
+                     * 
+                     * Will make new uuid, project template, and name the in(NUMBER).tex
+                     */
+                    console.log("here");
+                    for (i = 0; i < fileNumber; i++) {
+                        let in_file = build_dir + '/in' + i + '.tex';
+                        new_project.fileNames.push(in_file);
+                        fs.writeFile(in_file, new_project_data, 'utf8', (e) => {
+
+                        });
+                        console.log("made replicant");
+                    }
                     db.get().collection('projects').insertOne(new_project, (err, r) => {
-                        res.redirect(`/projects/${doc_id}/edit`);
                     });
                 });
+            }).then(toRedirect => {
+                res.redirect(`/projects/${doc_id}/edit`);
             });
         } else {
             res.redirect('/projects/new');
         }
     });
+}
+
+/**
+ * Create a new project and redirect them to the editor.
+ */
+router.get('/new', (req, res) => {
+    // var doc_id = uuid.v4();
+    // db.get().collection('projects').find({ id: doc_id }).toArray((err, projects) => {
+    //     if (projects.length == 0) {
+    //         var new_project = {
+    //             title: "New Project",
+    //             id: doc_id,
+    //             owner: req.cookies.u,
+    //             collaborators: [],
+    //             viewers: []
+    //         }
+    //         let new_project_data = `\\documentclass{article}\n\n\\begin{document}\n\tMy New Project\n\\end{document}`;
+    //         let build_dir = `projects/${doc_id}`;
+    //         mkdirp(build_dir).then(made => {
+    //             let in_file = build_dir + '/in.tex'
+    //             fs.writeFile(in_file, new_project_data, 'utf8', (e) => {
+    //                 db.get().collection('projects').insertOne(new_project, (err, r) => {
+    //                     res.redirect(`/projects/${doc_id}/edit`);
+    //                 });
+    //             });
+    //         });
+    //     } else {
+    //         res.redirect('/projects/new');
+    //     }
+    // });
+    makeProject(req, res, 1);
+
 });
 
 /**
@@ -141,7 +193,7 @@ cmdRouter.get('/', (req, res) => {
 cmdRouter.get('/edit', (req, res) => {
     auth.middleware.project.modify(req, res, () => {
         // Get project data
-        db.get().collection('projects').findOne({ id: req.params.id }, { projection: { title: true, owner: true, collaborators: true, viewers: true } }, (err, project) => {
+        db.get().collection('projects').findOne({ id: req.params.id }, { projection: { title: true, owner: true, collaborators: true, viewers: true, fileNames: true} }, (err, project) => {
             if (err) throw err;
 
             fs.readFile(`./projects/${req.params.id}/in.tex`, (err, data) => {
@@ -166,7 +218,8 @@ cmdRouter.get('/edit', (req, res) => {
                     pisowner: (project.owner == req.cookies.u),
                     piscollab: project.collaborators.includes(req.cookies.u),
                     paction: null,
-                    uuid: require('uuid')
+                    uuid: require('uuid'),
+                    pfilenames: project.fileNames
                 }
 
                 var connection = sockets.getConnection();

@@ -31,6 +31,14 @@
             <div data-toggle="tooltip" data-placement="right" title="<%= brand.name %>" style="cursor: default;"><%= brand.name %></div>
             <a href="/profile" class="bg-light">Profile</a>
 
+            <div id="file-manager">
+                <% for (var i = 0; i < pfilenames.length;  i++ ) { %>
+                    <br/>  <%= pfilenames[i] %> 
+                    <br/>
+                    <%#  will output the filenames %>
+                <% } %>
+            </div>
+
 
             <div id="chatroom-container" class="">
                 <div id="chatroom-parent" class="col" style="height: 80vh; overflow-y:scroll">
